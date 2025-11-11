@@ -13,7 +13,6 @@ import {
 import { PageProps, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import {
-    BadgeCheck,
     BookOpen,
     FileText,
     FolderHeart,
@@ -23,8 +22,7 @@ import {
     MessageSquare,
     Settings,
     TrendingUp,
-    Users,
-    Wallet,
+    Users
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -63,34 +61,14 @@ export function AppSidebar() {
             icon: Users,
         },
         {
-            title: 'Verifikasi Fundraiser',
-            href: '/admin/fundraiser-verification',
-            icon: BadgeCheck,
-        },
-        {
             title: 'Kelola Kampanye',
             href: '/admin/campaigns',
             icon: FolderHeart,
         },
         {
-            title: 'Approval Kampanye',
-            href: '/admin/campaign-approvals',
-            icon: FileText,
-        },
-        {
-            title: 'Kelola Kategori',
-            href: '/admin/categories',
-            icon: BookOpen,
-        },
-        {
             title: 'Semua Donasi',
             href: '/admin/donations',
             icon: HandHeart,
-        },
-        {
-            title: 'Penarikan Dana',
-            href: '/admin/withdrawals',
-            icon: Wallet,
         },
         {
             title: 'Moderasi Komentar',
@@ -117,34 +95,14 @@ export function AppSidebar() {
             icon: Users,
         },
         {
-            title: 'Verifikasi Fundraiser',
-            href: '/admin/fundraiser-verification',
-            icon: BadgeCheck,
-        },
-        {
             title: 'Kelola Kampanye',
             href: '/admin/campaigns',
             icon: FolderHeart,
         },
         {
-            title: 'Approval Kampanye',
-            href: '/admin/campaign-approvals',
-            icon: FileText,
-        },
-        {
-            title: 'Kelola Kategori',
-            href: '/admin/categories',
-            icon: BookOpen,
-        },
-        {
             title: 'Semua Donasi',
             href: '/admin/donations',
             icon: HandHeart,
-        },
-        {
-            title: 'Penarikan Dana',
-            href: '/admin/withdrawals',
-            icon: Wallet,
         },
         {
             title: 'Moderasi Komentar',
@@ -155,45 +113,6 @@ export function AppSidebar() {
             title: 'Laporan & Statistik',
             href: '/admin/reports',
             icon: TrendingUp,
-        },
-    ];
-
-    // Menu untuk Fundraiser (Penggalang Dana)
-    const fundraiserMenu: NavItem[] = [
-        {
-            title: 'Kampanye Saya',
-            href: '/fundraiser/campaigns',
-            icon: FolderHeart,
-        },
-        {
-            title: 'Buat Kampanye Baru',
-            href: '/fundraiser/campaigns/create',
-            icon: FileText,
-        },
-        {
-            title: 'Donasi Masuk',
-            href: '/fundraiser/donations',
-            icon: HandHeart,
-        },
-        {
-            title: 'Penarikan Dana',
-            href: '/fundraiser/withdrawals',
-            icon: Wallet,
-        },
-        {
-            title: 'Komentar & Dukungan',
-            href: '/fundraiser/comments',
-            icon: MessageSquare,
-        },
-        {
-            title: 'Statistik Kampanye',
-            href: '/fundraiser/statistics',
-            icon: TrendingUp,
-        },
-        {
-            title: 'Profil Fundraiser',
-            href: '/fundraiser/profile',
-            icon: BadgeCheck,
         },
     ];
 
@@ -233,8 +152,6 @@ export function AppSidebar() {
         mainNavItems = [...mainNavItems, ...superAdminMenu];
     } else if (roles.includes('admin')) {
         mainNavItems = [...mainNavItems, ...adminMenu];
-    } else if (roles.includes('fundraiser')) {
-        mainNavItems = [...mainNavItems, ...fundraiserMenu];
     } else if (roles.includes('donor')) {
         mainNavItems = [...mainNavItems, ...donorMenu];
     }

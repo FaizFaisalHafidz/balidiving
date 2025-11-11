@@ -25,6 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'email_verified_at',
     ];
 
     /**
@@ -62,19 +63,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user's fundraiser profile
-     */
-    public function profilFundraiser(): HasOne
-    {
-        return $this->hasOne(ProfilFundraiser::class);
-    }
-
-    /**
-     * Get the user's campaigns
+     * Get the user's campaigns (admin created)
      */
     public function kampanye(): HasMany
     {
-        return $this->hasMany(Kampanye::class);
+        return $this->hasMany(Kampanye::class, 'created_by');
     }
 
     /**
@@ -83,14 +76,6 @@ class User extends Authenticatable
     public function donasi(): HasMany
     {
         return $this->hasMany(Donasi::class);
-    }
-
-    /**
-     * Get the user's withdrawal requests
-     */
-    public function penarikanDana(): HasMany
-    {
-        return $this->hasMany(PenarikanDana::class);
     }
 
     /**
@@ -110,27 +95,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is verified fundraiser
-     */
-    public function isVerifiedFundraiser(): bool
-    {
-        return $this->profilFundraiser && $this->profilFundraiser->isVerified();
-    }
-
-    /**
      * Check if user has specific role
      */
     public function isAdmin(): bool
     {
         return $this->hasRole(['super-admin', 'admin']);
-    }
-
-    /**
-     * Check if user is fundraiser
-     */
-    public function isFundraiser(): bool
-    {
-        return $this->hasRole('fundraiser');
     }
 
     /**

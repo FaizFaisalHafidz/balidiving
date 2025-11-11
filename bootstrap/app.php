@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // Exclude Midtrans notification from CSRF verification
         $middleware->validateCsrfTokens(except: [
             'donations/notification',
+        ]);
+
+        // Register middleware alias
+        $middleware->alias([
+            'role' => CheckRole::class,
         ]);
 
         $middleware->web(append: [

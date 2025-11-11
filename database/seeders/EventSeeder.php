@@ -15,11 +15,13 @@ class EventSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get a verified fundraiser to be the event organizer
-        $organizer = User::role('fundraiser')->first();
+        // Get admin user (Bali Diving organizes events)
+        $organizer = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['super-admin', 'admin']);
+        })->first();
 
         if (!$organizer) {
-            $this->command->warn('No fundraiser found. Please run UserSeeder first.');
+            $this->command->warn('No admin user found. Please run UserSeeder first.');
             return;
         }
 

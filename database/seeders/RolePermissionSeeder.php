@@ -23,8 +23,6 @@ class RolePermissionSeeder extends Seeder
             'campaign.read',
             'campaign.update',
             'campaign.delete',
-            'campaign.approve',
-            'campaign.reject',
 
             // User Management Permissions
             'user.create',
@@ -38,11 +36,15 @@ class RolePermissionSeeder extends Seeder
             'donation.read',
             'donation.update',
 
-            // Withdrawal Permissions
-            'withdrawal.create',
-            'withdrawal.read',
-            'withdrawal.approve',
-            'withdrawal.reject',
+            // Category Permissions
+            'category.create',
+            'category.read',
+            'category.update',
+            'category.delete',
+
+            // Report Permissions
+            'report.read',
+            'report.export',
         ];
 
         foreach ($permissions as $permission) {
@@ -62,26 +64,17 @@ class RolePermissionSeeder extends Seeder
             'campaign.read',
             'campaign.update',
             'campaign.delete',
-            'campaign.approve',
-            'campaign.reject',
             'user.read',
             'user.update',
             'user.verify',
             'donation.read',
             'donation.update',
-            'withdrawal.read',
-            'withdrawal.approve',
-            'withdrawal.reject',
-        ]);
-
-        // Fundraiser - Campaign and own profile management
-        $fundraiser = Role::create(['name' => 'fundraiser']);
-        $fundraiser->givePermissionTo([
-            'campaign.create',
-            'campaign.read',
-            'campaign.update', // own campaigns only
-            'withdrawal.create',
-            'withdrawal.read', // own withdrawals only
+            'category.create',
+            'category.read',
+            'category.update',
+            'category.delete',
+            'report.read',
+            'report.export',
         ]);
 
         // Donor - Basic read permissions and donation

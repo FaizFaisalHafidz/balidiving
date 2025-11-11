@@ -15,13 +15,13 @@ class KampanyeSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get fundraiser user
-        $fundraiser = User::whereHas('roles', function ($query) {
-            $query->where('name', 'fundraiser');
+        // Get admin user (Bali Diving is the campaign creator)
+        $admin = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['super-admin', 'admin']);
         })->first();
 
-        if (!$fundraiser) {
-            $this->command->error('Fundraiser user not found. Please run UserSeeder first.');
+        if (!$admin) {
+            $this->command->error('Admin user not found. Please run UserSeeder first.');
             return;
         }
 
@@ -36,7 +36,7 @@ class KampanyeSeeder extends Seeder
 
         $campaigns = [
             [
-                'user_id' => $fundraiser->id,
+                'user_id' => $admin->id,
                 'kategori_id' => $terumbuKarang->id,
                 'judul' => 'Coral Restoration Project',
                 'deskripsi' => 'Help restore coral reefs in endangered marine areas. Coral reefs are among the most diverse ecosystems on Earth, providing homes to 25% of all marine species. This project aims to restore 1000 square meters of damaged coral reefs using advanced marine biology techniques and community involvement.',
@@ -48,7 +48,7 @@ class KampanyeSeeder extends Seeder
                 'status' => 'aktif',
             ],
             [
-                'user_id' => $fundraiser->id,
+                'user_id' => $admin->id,
                 'kategori_id' => $terumbuKarang->id,
                 'judul' => 'Help Relocate the Coral',
                 'deskripsi' => 'Support coral relocation efforts to safer waters. Due to rising ocean temperatures and pollution, many coral colonies need to be moved to healthier environments. This campaign will fund the equipment, marine biologists, and boat operations needed for safe coral transplantation.',
@@ -60,7 +60,7 @@ class KampanyeSeeder extends Seeder
                 'status' => 'aktif',
             ],
             [
-                'user_id' => $fundraiser->id,
+                'user_id' => $admin->id,
                 'kategori_id' => $konservasiLaut->id,
                 'judul' => 'Save Coral Reefs',
                 'deskripsi' => 'Protect existing coral reef ecosystems from further damage. Coral reefs are dying at an alarming rate. This project focuses on establishing marine protected areas, educating local communities, and implementing sustainable fishing practices to preserve our remaining coral reefs.',
@@ -72,7 +72,7 @@ class KampanyeSeeder extends Seeder
                 'status' => 'aktif',
             ],
             [
-                'user_id' => $fundraiser->id,
+                'user_id' => $admin->id,
                 'kategori_id' => $terumbuKarang->id,
                 'judul' => 'Help Rebuild Coral Reefs',
                 'deskripsi' => 'Rebuild damaged coral reef systems using innovative techniques. This large-scale project will create artificial reef structures, transplant healthy coral fragments, and monitor the recovery progress over 3 years. Your donation will directly contribute to ocean ecosystem restoration.',
@@ -84,7 +84,7 @@ class KampanyeSeeder extends Seeder
                 'status' => 'aktif',
             ],
             [
-                'user_id' => $fundraiser->id,
+                'user_id' => $admin->id,
                 'kategori_id' => KategoriKampanye::where('nama', 'Pembersihan Pantai')->first()->id ?? $konservasiLaut->id,
                 'judul' => 'Beach Cleanup Initiative',
                 'deskripsi' => 'Join our monthly beach cleanup campaign to remove plastic waste and debris from our coastal areas. Every piece of trash removed means a safer environment for marine life and cleaner beaches for our communities.',
@@ -96,7 +96,7 @@ class KampanyeSeeder extends Seeder
                 'status' => 'aktif',
             ],
             [
-                'user_id' => $fundraiser->id,
+                'user_id' => $admin->id,
                 'kategori_id' => KategoriKampanye::where('nama', 'Satwa Laut')->first()->id ?? $konservasiLaut->id,
                 'judul' => 'Sea Turtle Conservation',
                 'deskripsi' => 'Protect endangered sea turtle nesting sites and hatchlings. This program includes beach patrols during nesting season, hatchery protection, and education programs for local communities about the importance of sea turtle conservation.',

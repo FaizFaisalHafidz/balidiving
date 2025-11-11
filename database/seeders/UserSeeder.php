@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\ProfilPengguna;
-use App\Models\ProfilFundraiser;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -32,7 +31,7 @@ class UserSeeder extends Seeder
 
         // Create Admin
         $admin = User::create([
-            'name' => 'Admin',
+            'name' => 'Admin Bali Diving',
             'email' => 'admin@borntogive.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
@@ -42,45 +41,36 @@ class UserSeeder extends Seeder
         ProfilPengguna::create([
             'user_id' => $admin->id,
             'nomor_telepon' => '081234567891',
-            'alamat' => 'Bandung, Indonesia',
-        ]);
-
-        // Create Sample Verified Fundraiser
-        $fundraiser = User::create([
-            'name' => 'Ocean Guardian',
-            'email' => 'fundraiser@borntogive.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
-        $fundraiser->assignRole('fundraiser');
-        
-        ProfilPengguna::create([
-            'user_id' => $fundraiser->id,
-            'nomor_telepon' => '081234567892',
             'alamat' => 'Bali, Indonesia',
         ]);
 
-        ProfilFundraiser::create([
-            'user_id' => $fundraiser->id,
-            'nomor_rekening' => '1234567890',
-            'nama_bank' => 'BCA',
-            'nama_pemilik_rekening' => 'Ocean Guardian',
-            'status_verifikasi' => 'terverifikasi',
-        ]);
-
-        // Create Sample Donor
-        $donor = User::create([
+        // Create Sample Donors
+        $donor1 = User::create([
             'name' => 'John Donor',
             'email' => 'donor@borntogive.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
         ]);
-        $donor->assignRole('donor');
+        $donor1->assignRole('donor');
         
         ProfilPengguna::create([
-            'user_id' => $donor->id,
-            'nomor_telepon' => '081234567893',
+            'user_id' => $donor1->id,
+            'nomor_telepon' => '081234567892',
             'alamat' => 'Surabaya, Indonesia',
+        ]);
+
+        $donor2 = User::create([
+            'name' => 'Jane Smith',
+            'email' => 'jane@example.com',
+            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
+        ]);
+        $donor2->assignRole('donor');
+        
+        ProfilPengguna::create([
+            'user_id' => $donor2->id,
+            'nomor_telepon' => '081234567893',
+            'alamat' => 'Denpasar, Bali',
         ]);
     }
 }

@@ -34,9 +34,79 @@ Route::post('/donations/notification', [DonationController::class, 'notification
 Route::get('/donations/check-status/{orderId}', [DonationController::class, 'checkStatus'])->name('donations.check-status');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    // Dashboard untuk admin, super-admin, dan fundraiser
+    Route::middleware(['role:super-admin,admin,fundraiser'])->group(function () {
+        Route::get('dashboard', function () {
+            return Inertia::render('dashboard');
+        })->name('dashboard');
+
+        // User Management (Super Admin & Admin only)
+        Route::middleware(['role:super-admin,admin'])->group(function () {
+            Route::resource('admin/users', App\Http\Controllers\Admin\UserController::class)
+                ->names([
+                    'index' => 'admin.users.index',
+                    'create' => 'admin.users.create',
+                    'store' => 'admin.users.store',
+                    'show' => 'admin.users.show',
+                    'edit' => 'admin.users.edit',
+                    'update' => 'admin.users.update',
+                    'destroy' => 'admin.users.destroy',
+                ]);
+            
+            // Email verification management
+            Route::post('admin/users/{user}/verify', [App\Http\Controllers\Admin\UserController::class, 'verify'])
+                ->name('admin.users.verify');
+            Route::post('admin/users/{user}/unverify', [App\Http\Controllers\Admin\UserController::class, 'unverify'])
+                ->name('admin.users.unverify');
+
+            // Campaign Management
+            Route::resource('admin/campaigns', App\Http\Controllers\Admin\CampaignController::class)
+                ->names([
+                    'index' => 'admin.campaigns.index',
+                    'create' => 'admin.campaigns.create',
+                    'store' => 'admin.campaigns.store',
+                    'show' => 'admin.campaigns.show',
+                    'edit' => 'admin.campaigns.edit',
+                    'update' => 'admin.campaigns.update',
+                    'destroy' => 'admin.campaigns.destroy',
+                ]);
+            
+            // Campaign status management
+            Route::post('admin/campaigns/{campaign}/publish', [App\Http\Controllers\Admin\CampaignController::class, 'publish'])
+                ->name('admin.campaigns.publish');
+            Route::post('admin/campaigns/{campaign}/unpublish', [App\Http\Controllers\Admin\CampaignController::class, 'unpublish'])
+                ->name('admin.campaigns.unpublish');
+            Route::post('admin/campaigns/{campaign}/complete', [App\Http\Controllers\Admin\CampaignController::class, 'complete'])
+                ->name('admin.campaigns.complete');
+
+            // Category Management
+            Route::get('admin/categories/create', [App\Http\Controllers\Admin\CategoryController::class, 'create'])
+                ->name('admin.categories.create');
+            Route::post('admin/categories', [App\Http\Controllers\Admin\CategoryController::class, 'store'])
+                ->name('admin.categories.store');
+            Route::get('admin/categories/{category}/edit', [App\Http\Controllers\Admin\CategoryController::class, 'edit'])
+                ->name('admin.categories.edit');
+            Route::put('admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'update'])
+                ->name('admin.categories.update');
+            Route::delete('admin/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])
+                ->name('admin.categories.destroy');
+
+            // Donation Management
+            Route::get('admin/donations', [App\Http\Controllers\Admin\DonationManagementController::class, 'index'])
+                ->name('admin.donations.index');
+            Route::get('admin/donations/{donation}', [App\Http\Controllers\Admin\DonationManagementController::class, 'show'])
+                ->name('admin.donations.show');
+            Route::get('admin/donations/export/excel', [App\Http\Controllers\Admin\DonationManagementController::class, 'export'])
+                ->name('admin.donations.export');
+        });
+    });
+
+    // Dashboard untuk donor (akan dibuat terpisah)
+    Route::middleware(['role:donor'])->group(function () {
+        Route::get('/donor/dashboard', function () {
+            return Inertia::render('donor/dashboard');
+        })->name('donor.dashboard');
+    });
 });
 
 require __DIR__.'/settings.php';
