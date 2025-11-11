@@ -56,8 +56,16 @@ export default function Index({
         }
     }, []);
 
+    // Debug: log props to console
+    useEffect(() => {
+        console.log('Campaign Stats:', stats);
+        console.log('Category Stats:', categoryStats);
+        console.log('Campaigns:', campaigns);
+        console.log('Categories:', categories);
+    }, [stats, categoryStats, campaigns, categories]);
+
     return (
-        <AppLayout user={auth.user}>
+        <AppLayout>
             <Head title="Kelola Kampanye & Kategori" />
 
             <div className="p-6 space-y-6">
@@ -133,7 +141,7 @@ export default function Index({
                                             Total Terkumpul
                                         </p>
                                         <p className="text-2xl font-bold text-slate-900 mt-2">
-                                            ${(stats?.total_raised || 0).toLocaleString()}
+                                            Rp {(stats?.total_raised || 0).toLocaleString('id-ID')}
                                         </p>
                                     </div>
                                     <div className="p-3 bg-blue-100 rounded-lg">
@@ -149,7 +157,7 @@ export default function Index({
                                             Target Tercapai
                                         </p>
                                         <p className="text-2xl font-bold text-slate-900 mt-2">
-                                            {stats?.target_reached || 0}
+                                            {(stats?.target_reached || 0).toFixed(1)}%
                                         </p>
                                     </div>
                                     <div className="p-3 bg-purple-100 rounded-lg">

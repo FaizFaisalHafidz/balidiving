@@ -42,19 +42,41 @@ class CampaignController extends Controller
         $query->orderBy($sortBy, $sortOrder);
 
         $campaigns = $query->paginate(10)->withQueryString();
+        
+        // Add percentage to each campaign
+        $campaigns->getCollection()->transform(function ($campaign) {
+            $campaign->percentage = $campaign->target_dana > 0 
+                ? round(($campaign->dana_terkumpul / $campaign->target_dana) * 100, 1) 
+                : 0;
+            return $campaign;
+        });
 
-        // Get stats
+        // Get campaign stats
+        $totalRaised = Kampanye::sum('dana_terkumpul');
+        $totalTarget = Kampanye::sum('target_dana');
+        $targetReached = $totalTarget > 0 ? round(($totalRaised / $totalTarget) * 100, 2) : 0;
+
         $stats = [
-            'total' => Kampanye::count(),
-            'active' => Kampanye::where('status', 'aktif')->count(),
-            'completed' => Kampanye::where('status', 'selesai')->count(),
-            'total_collected' => Kampanye::sum('dana_terkumpul'),
+            'total_campaigns' => Kampanye::count(),
+            'active_campaigns' => Kampanye::where('status', 'aktif')->count(),
+            'total_raised' => $totalRaised,
+            'target_reached' => $targetReached,
         ];
+
+        // Get category stats
+        $categoryStats = [
+            'total_categories' => KategoriKampanye::count(),
+            'total_campaigns' => Kampanye::count(),
+        ];
+
+        // Get categories with campaign count
+        $categories = KategoriKampanye::withCount('kampanye')->get();
 
         return Inertia::render('admin/campaigns/index', [
             'campaigns' => $campaigns,
-            'categories' => KategoriKampanye::all(),
+            'categories' => $categories,
             'stats' => $stats,
+            'categoryStats' => $categoryStats,
             'filters' => [
                 'search' => $request->search,
                 'category' => $request->category ?? 'all',
