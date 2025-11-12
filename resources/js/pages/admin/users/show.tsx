@@ -13,13 +13,13 @@ interface Props {
         email_verified_at: string | null;
         created_at: string;
         roles: { name: string }[];
-        donations: {
+        donasi: {
             id: number;
-            amount: number;
+            jumlah: number;
             status: string;
             created_at: string;
-            campaign: {
-                title: string;
+            kampanye: {
+                judul: string;
                 slug: string;
             };
         }[];
@@ -169,23 +169,23 @@ export default function Show({ user, stats }: Props) {
                 </div>
 
                 {/* Recent Donations */}
-                {user.donations.length > 0 && (
+                {user.donasi && user.donasi.length > 0 && (
                     <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-md">
                         <h2 className="text-xl font-bold text-slate-900 mb-4">
                             Donasi Terbaru (10 terakhir)
                         </h2>
                         <div className="space-y-3">
-                            {user.donations.map((donation) => (
+                            {user.donasi.map((donation) => (
                                 <div
                                     key={donation.id}
                                     className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200"
                                 >
                                     <div className="flex-1">
                                         <Link
-                                            href={`/campaigns/${donation.campaign.slug}`}
+                                            href={`/campaigns/${donation.kampanye.slug}`}
                                             className="text-slate-900 font-medium hover:text-slate-700 transition-colors"
                                         >
-                                            {donation.campaign.title}
+                                            {donation.kampanye.judul}
                                         </Link>
                                         <div className="text-sm text-slate-500 mt-1">
                                             {format(new Date(donation.created_at), 'dd MMM yyyy, HH:mm')}
@@ -193,7 +193,7 @@ export default function Show({ user, stats }: Props) {
                                     </div>
                                     <div className="text-right">
                                         <div className="text-slate-900 font-bold">
-                                            {formatCurrency(donation.amount)}
+                                            {formatCurrency(donation.jumlah)}
                                         </div>
                                         <Badge
                                             variant={
@@ -217,7 +217,7 @@ export default function Show({ user, stats }: Props) {
                 )}
 
                 {/* Empty State */}
-                {user.donations.length === 0 && (
+                {(!user.donasi || user.donasi.length === 0) && (
                     <div className="bg-white border border-slate-200 rounded-xl p-12 text-center shadow-md">
                         <Heart className="h-12 w-12 text-slate-300 mx-auto mb-4" />
                         <h3 className="text-lg font-semibold text-slate-900 mb-2">

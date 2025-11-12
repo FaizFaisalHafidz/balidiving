@@ -7,7 +7,6 @@ import {
 } from '@/components/ui/card';
 import { home } from '@/routes';
 import { Link } from '@inertiajs/react';
-import { Waves } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 export default function AuthCardLayout({
@@ -41,12 +40,16 @@ export default function AuthCardLayout({
                     href={home()}
                     className="flex flex-col items-center gap-3 self-center"
                 >
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-teal-500 shadow-lg shadow-blue-500/30 transition-transform hover:scale-105">
-                        <Waves className="size-8 text-white" strokeWidth={2.5} />
+                    <div className="flex h-20 w-20 items-center justify-center rounded-full overflow-hidden bg-white shadow-lg shadow-blue-500/30 transition-transform hover:scale-105">
+                        <img 
+                            src="/images/logo-atb.jpeg" 
+                            alt="Adopt the Blue"
+                            className="h-full w-full object-cover"
+                        />
                     </div>
                     <div className="text-center">
                         <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 dark:from-blue-400 dark:to-teal-400 bg-clip-text text-transparent">
-                            Born to Give
+                            Adopt the Blue
                         </h1>
                         <p className="text-sm text-blue-600/70 dark:text-blue-400/70 font-medium">
                             Ocean Conservation Platform

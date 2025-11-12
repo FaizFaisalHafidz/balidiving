@@ -5,9 +5,13 @@ use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+
+// Locale switcher
+Route::post('/locale/switch', [LocaleController::class, 'switch'])->name('locale.switch');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -98,6 +102,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->name('admin.donations.show');
             Route::get('admin/donations/export/excel', [App\Http\Controllers\Admin\DonationManagementController::class, 'export'])
                 ->name('admin.donations.export');
+
+            // Reports & Statistics
+            Route::get('admin/reports', [App\Http\Controllers\Admin\ReportsController::class, 'index'])
+                ->name('admin.reports.index');
+            Route::get('admin/reports/export/donations', [App\Http\Controllers\Admin\ReportsController::class, 'exportDonations'])
+                ->name('admin.reports.export.donations');
+            Route::get('admin/reports/export/campaigns', [App\Http\Controllers\Admin\ReportsController::class, 'exportCampaigns'])
+                ->name('admin.reports.export.campaigns');
+            Route::get('admin/reports/export/users', [App\Http\Controllers\Admin\ReportsController::class, 'exportUsers'])
+                ->name('admin.reports.export.users');
         });
     });
 

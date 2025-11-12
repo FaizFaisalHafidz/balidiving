@@ -17,6 +17,7 @@ interface StatsSectionProps {
     successful_projects: number;
     people_impacted: number;
     total_raised: number;
+    total_raised_formatted: string;
     active_volunteers: number;
   };
 }
@@ -42,7 +43,6 @@ export default function StatsSection({ stats }: StatsSectionProps) {
     {
       label: t('stats.totalRaised'),
       value: stats.total_raised,
-      prefix: '$',
       icon: CurrencyDollarIcon,
       description: t('stats.totalRaised.desc')
     },
@@ -54,12 +54,11 @@ export default function StatsSection({ stats }: StatsSectionProps) {
     },
   ];
 
-  const formatNumber = (num: number, prefix?: string) => {
-    const formatted = num.toLocaleString();
-    return prefix ? `${prefix}${formatted}` : formatted;
+  const formatNumber = (num: number) => {
+    return num.toLocaleString();
   };
 
-  function CountUpAnimation({ targetValue, prefix }: { targetValue: number; prefix?: string }) {
+  function CountUpAnimation({ targetValue, isCurrency }: { targetValue: number; isCurrency?: boolean }) {
     const [count, setCount] = useState(0);
 
     useEffect(() => {
@@ -84,7 +83,12 @@ export default function StatsSection({ stats }: StatsSectionProps) {
       return () => clearInterval(timer);
     }, [isInView, targetValue]);
 
-    return <span>{formatNumber(count, prefix)}</span>;
+    // For currency, show formatted string from backend on completion
+    if (isCurrency && count === targetValue) {
+      return <span>{stats.total_raised_formatted}</span>;
+    }
+
+    return <span>{formatNumber(count)}</span>;
   }
 
   const containerVariants = {
@@ -133,7 +137,10 @@ export default function StatsSection({ stats }: StatsSectionProps) {
                 
                 <div className="mb-4">
                   <div className="text-4xl font-bold text-white">
-                    <CountUpAnimation targetValue={stat.value} prefix={stat.prefix} />
+                    <CountUpAnimation 
+                      targetValue={stat.value} 
+                      isCurrency={index === 2} // Total raised is at index 2
+                    />
                   </div>
                 </div>
                 

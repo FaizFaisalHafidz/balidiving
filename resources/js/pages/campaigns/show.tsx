@@ -16,7 +16,9 @@ interface Campaign {
     description: string;
     image: string;
     raised: number;
+    raisedFormatted: string;
     target: number;
+    targetFormatted: string;
     progress: number;
     daysLeft: number;
     start_date: string;
@@ -38,6 +40,7 @@ interface Donation {
     id: number;
     donor_name: string;
     amount: number;
+    amountFormatted: string;
     message: string | null;
     created_at: string;
 }
@@ -55,7 +58,9 @@ interface RelatedCampaign {
     slug: string;
     image: string;
     raised: number;
+    raisedFormatted: string;
     target: number;
+    targetFormatted: string;
     progress: number;
     daysLeft: number;
     href: string;
@@ -83,7 +88,7 @@ export default function CampaignShow({
 
     return (
         <FrontLayout
-            title={`${campaign.title} - Born to Give`}
+            title={`${campaign.title} - Adopt the Blue`}
             description={campaign.description.substring(0, 160)}
         >
             <Head title={campaign.title} />
@@ -220,7 +225,7 @@ export default function CampaignShow({
                                                                 {donation.donor_name}
                                                             </div>
                                                             <div className="text-blue-600 font-bold">
-                                                                ${donation.amount.toLocaleString()}
+                                                                {donation.amountFormatted}
                                                             </div>
                                                         </div>
                                                         {donation.message && (
@@ -283,10 +288,10 @@ export default function CampaignShow({
                                     {/* Amount Raised */}
                                     <div className="mb-6">
                                         <div className="text-4xl font-bold text-slate-900 mb-2">
-                                            ${campaign.raised.toLocaleString()}
+                                            {campaign.raisedFormatted}
                                         </div>
                                         <div className="text-slate-600 text-lg">
-                                            raised of ${campaign.target.toLocaleString()} goal
+                                            raised of {campaign.targetFormatted} goal
                                         </div>
                                     </div>
 
@@ -397,7 +402,7 @@ export default function CampaignShow({
                                                 </h3>
                                                 <div className="flex justify-between items-center text-sm">
                                                     <span className="text-slate-900 font-bold">
-                                                        ${related.raised.toLocaleString()}
+                                                        {related.raisedFormatted}
                                                     </span>
                                                     <span className="text-slate-600">
                                                         {related.daysLeft} days left

@@ -6,6 +6,7 @@ use App\Models\Kampanye;
 use App\Models\KategoriKampanye;
 use App\Models\Donasi;
 use App\Models\Komentar;
+use App\Helpers\CurrencyHelper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -16,6 +17,8 @@ class CampaignController extends Controller
      */
     public function index(Request $request)
     {
+        $locale = app()->getLocale();
+        
         $query = Kampanye::with(['user', 'kategori'])
             ->where('status', 'aktif')
             ->where('tanggal_berakhir', '>=', now()->toDateString());
@@ -52,7 +55,7 @@ class CampaignController extends Controller
                 break;
         }
 
-        $campaigns = $query->paginate(12)->through(function ($kampanye) {
+        $campaigns = $query->paginate(12)->through(function ($kampanye) use ($locale) {
             $daysLeft = now()->startOfDay()->diffInDays($kampanye->tanggal_berakhir, false);
             $daysLeft = max(0, $daysLeft); // Ensure non-negative
             
@@ -60,14 +63,19 @@ class CampaignController extends Controller
                 ? min(100, round(($kampanye->dana_terkumpul / $kampanye->target_dana) * 100)) 
                 : 0;
 
+            $raised = CurrencyHelper::format($kampanye->dana_terkumpul, $locale);
+            $target = CurrencyHelper::format($kampanye->target_dana, $locale);
+
             return [
                 'id' => $kampanye->id,
                 'title' => $kampanye->judul,
                 'slug' => $kampanye->slug,
                 'description' => substr($kampanye->deskripsi, 0, 150) . '...',
                 'image' => $kampanye->gambar_utama,
-                'raised' => $kampanye->dana_terkumpul,
-                'target' => $kampanye->target_dana,
+                'raised' => $raised['amount'],
+                'raisedFormatted' => $raised['formatted'],
+                'target' => $target['amount'],
+                'targetFormatted' => $target['formatted'],
                 'progress' => $progress,
                 'daysLeft' => $daysLeft,
                 'category' => $kampanye->kategori->nama,
@@ -101,6 +109,8 @@ class CampaignController extends Controller
      */
     public function show(string $slug)
     {
+        $locale = app()->getLocale();
+        
         $kampanye = Kampanye::with(['user.profilPengguna', 'kategori'])
             ->where('slug', $slug)
             ->firstOrFail();
@@ -119,11 +129,14 @@ class CampaignController extends Controller
             ->latest()
             ->limit(10)
             ->get()
-            ->map(function ($donasi) {
+            ->map(function ($donasi) use ($locale) {
+                $amount = CurrencyHelper::format($donasi->jumlah, $locale);
+                
                 return [
                     'id' => $donasi->id,
                     'donor_name' => $donasi->nama_donatur ?? ($donasi->user ? $donasi->user->name : 'Anonymous'),
-                    'amount' => $donasi->jumlah,
+                    'amount' => $amount['amount'],
+                    'amountFormatted' => $amount['formatted'],
                     'message' => $donasi->pesan_dukungan,
                     'created_at' => $donasi->created_at->diffForHumans(),
                 ];
@@ -153,7 +166,7 @@ class CampaignController extends Controller
             ->where('tanggal_berakhir', '>=', now()->toDateString())
             ->limit(3)
             ->get()
-            ->map(function ($related) {
+            ->map(function ($related) use ($locale) {
                 $daysLeft = now()->startOfDay()->diffInDays($related->tanggal_berakhir, false);
                 $daysLeft = max(0, $daysLeft); // Ensure non-negative
                 
@@ -161,18 +174,26 @@ class CampaignController extends Controller
                     ? min(100, round(($related->dana_terkumpul / $related->target_dana) * 100)) 
                     : 0;
 
+                $raised = CurrencyHelper::format($related->dana_terkumpul, $locale);
+                $target = CurrencyHelper::format($related->target_dana, $locale);
+
                 return [
                     'id' => $related->id,
                     'title' => $related->judul,
                     'slug' => $related->slug,
                     'image' => $related->gambar_utama,
-                    'raised' => $related->dana_terkumpul,
-                    'target' => $related->target_dana,
+                    'raised' => $raised['amount'],
+                    'raisedFormatted' => $raised['formatted'],
+                    'target' => $target['amount'],
+                    'targetFormatted' => $target['formatted'],
                     'progress' => $progress,
                     'daysLeft' => $daysLeft,
                     'href' => route('campaigns.show', $related->slug),
                 ];
             });
+
+        $raised = CurrencyHelper::format($kampanye->dana_terkumpul, $locale);
+        $target = CurrencyHelper::format($kampanye->target_dana, $locale);
 
         $campaign = [
             'id' => $kampanye->id,
@@ -180,8 +201,10 @@ class CampaignController extends Controller
             'slug' => $kampanye->slug,
             'description' => $kampanye->deskripsi,
             'image' => $kampanye->gambar_utama,
-            'raised' => $kampanye->dana_terkumpul,
-            'target' => $kampanye->target_dana,
+            'raised' => $raised['amount'],
+            'raisedFormatted' => $raised['formatted'],
+            'target' => $target['amount'],
+            'targetFormatted' => $target['formatted'],
             'progress' => $progress,
             'daysLeft' => $daysLeft,
             'start_date' => $kampanye->tanggal_mulai->format('d M Y'),

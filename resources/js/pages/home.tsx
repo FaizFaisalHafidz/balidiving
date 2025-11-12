@@ -14,7 +14,9 @@ interface Campaign {
   description: string;
   image: string;
   raised: number;
+  raisedFormatted: string;
   target: number;
+  targetFormatted: string;
   progress: number;
   daysLeft: number;
   href: string;
@@ -26,6 +28,7 @@ interface Stats {
   successful_projects: number;
   people_impacted: number;
   total_raised: number;
+  total_raised_formatted: string;
   active_volunteers: number;
 }
 
@@ -37,8 +40,8 @@ interface HomeProps {
 export default function Home({ campaigns, stats }: HomeProps) {
   return (
     <FrontLayout 
-      title="Bali Diving - Marine Conservation Crowdfunding"
-      description="Support ocean conservation and diving community projects through Bali Diving's crowdfunding platform. Join us in protecting marine life."
+      title="Adopt the Blue - Marine Conservation Crowdfunding"
+      description="Support ocean conservation and diving community projects through Adopt the Blue's crowdfunding platform. Join us in protecting marine life."
     >
       <HeroSection />
       <FeaturedLinks />

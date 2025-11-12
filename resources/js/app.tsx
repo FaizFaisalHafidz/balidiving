@@ -29,7 +29,7 @@ createInertiaApp({
                         style: {
                             background: '#1e293b',
                             color: '#fff',
-                            border: '1px solid #334155',
+                                border: '1px solid #334155',
                         },
                     }}
                 />

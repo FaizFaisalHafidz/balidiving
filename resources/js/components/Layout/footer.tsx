@@ -21,9 +21,9 @@ export default function Footer() {
             {/* Logo */}
             <div className="mb-4">
               <img 
-                src="https://balidiving.com/images/bali-diving-logo.svg" 
-                alt="Bali Diving" 
-                className="h-12 w-auto"
+                src="/images/logo-atb.jpeg" 
+                alt="Adopt the Blue" 
+                className="h-12 w-auto rounded-full"
               />
             </div>
             
@@ -222,9 +222,9 @@ export default function Footer() {
           <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
             {/* Left: Copyright & Company Info */}
             <div className="text-gray-400 text-sm text-center lg:text-left">
-              <div className="font-sui font-medium text-white mb-1">{t('footer.copyright')} {new Date().getFullYear()} Bali Diving. {t('footer.allRightsReserved')}</div>
-              <div className="text-gray-500">{t('footer.padiCertified')}</div>
-              <div className="text-gray-500">{t('footer.companyName')}</div>
+              <div className="font-sui font-medium text-white mb-1">{t('footer.copyright')}</div>
+              <div className="text-gray-500">{t('footer.padi')}</div>
+              <div className="text-gray-500">{t('footer.company')}</div>
             </div>
 
             {/* Center: Partner Logos */}

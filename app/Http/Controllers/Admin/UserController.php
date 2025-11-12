@@ -106,16 +106,16 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user->load(['roles', 'donations' => function ($query) {
-            $query->with('campaign')->latest()->limit(10);
+        $user->load(['roles', 'donasi' => function ($query) {
+            $query->with('kampanye')->latest()->limit(10);
         }]);
 
         return Inertia::render('admin/users/show', [
             'user' => $user,
             'stats' => [
-                'total_donations' => $user->donations()->count(),
-                'total_amount' => $user->donations()->where('status', 'berhasil')->sum('amount'),
-                'campaigns_supported' => $user->donations()->where('status', 'berhasil')->distinct('campaign_id')->count(),
+                'total_donations' => $user->donasi()->count(),
+                'total_amount' => $user->donasi()->where('status', 'berhasil')->sum('jumlah'),
+                'campaigns_supported' => $user->donasi()->where('status', 'berhasil')->distinct('kampanye_id')->count(),
             ],
         ]);
     }

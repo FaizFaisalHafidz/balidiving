@@ -29,7 +29,7 @@ export default function DonationSuccess({ donation, campaign }: DonationSuccessP
     };
 
     const handleShare = () => {
-        const text = `Saya baru saja berdonasi untuk kampanye "${campaign.title}" di Born to Give! Mari bergabung mendukung konservasi laut! 🌊`;
+        const text = `Saya baru saja berdonasi untuk kampanye "${campaign.title}" di Adopt the Blue! Mari bergabung mendukung konservasi laut! 🌊`;
         
         if (navigator.share) {
             navigator.share({

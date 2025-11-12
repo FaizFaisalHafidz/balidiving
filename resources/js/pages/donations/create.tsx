@@ -41,10 +41,11 @@ declare global {
 
 export default function DonationCreate({ campaign, midtransClientKey, exchangeRate }: DonationCreateProps) {
     const { props } = usePage<any>();
-    const [currency, setCurrency] = useState<'IDR' | 'USD'>('IDR');
+    const authUser = props.auth?.user;
+    
     const [amount, setAmount] = useState('');
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    const [name, setName] = useState(authUser?.name || '');
+    const [email, setEmail] = useState(authUser?.email || '');
     const [phone, setPhone] = useState('');
     const [message, setMessage] = useState('');
     const [isAnonymous, setIsAnonymous] = useState(false);
@@ -110,33 +111,14 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
         }
     }, [props]);
 
-    const quickAmountsIDR = [50000, 100000, 250000, 500000, 1000000];
-    const quickAmountsUSD = [5, 10, 25, 50, 100];
+    const quickAmounts = [50000, 100000, 250000, 500000, 1000000];
 
-    const quickAmounts = currency === 'IDR' ? quickAmountsIDR : quickAmountsUSD;
-
-    const formatCurrency = (value: number, curr: 'IDR' | 'USD') => {
+    const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
-            currency: curr,
+            currency: 'IDR',
             minimumFractionDigits: 0,
         }).format(value);
-    };
-
-    const convertAmount = (value: number, from: 'IDR' | 'USD', to: 'IDR' | 'USD') => {
-        if (from === to) return value;
-        if (from === 'USD') return value * exchangeRate;
-        return value / exchangeRate;
-    };
-
-    const handleCurrencyToggle = () => {
-        const newCurrency = currency === 'IDR' ? 'USD' : 'IDR';
-        if (amount) {
-            const numAmount = parseFloat(amount);
-            const converted = convertAmount(numAmount, currency, newCurrency);
-            setAmount(Math.round(converted).toString());
-        }
-        setCurrency(newCurrency);
     };
 
     const handleQuickAmount = (value: number) => {
@@ -150,8 +132,8 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
         const numAmount = parseFloat(amount);
         
         // Validation
-        if (!numAmount || numAmount < (currency === 'IDR' ? 10000 : 1)) {
-            setError(`Minimum donasi adalah ${currency === 'IDR' ? 'Rp 10.000' : '$1'}`);
+        if (!numAmount || numAmount < 10000) {
+            setError('Minimum donasi adalah Rp 10.000');
             return;
         }
 
@@ -165,7 +147,7 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
         // Use Inertia router to submit
         router.post(`/campaigns/${campaign.slug}/donate`, {
             amount: numAmount,
-            currency,
+            currency: 'IDR',
             name: isAnonymous ? 'Anonymous' : name,
             email,
             phone,
@@ -220,23 +202,16 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
                                 )}
 
                                 <form onSubmit={handleSubmit} className="space-y-6">
-                                    {/* Currency Toggle */}
+                                    {/* Currency Label - IDR Only */}
                                     <div>
-                                        <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center justify-between mb-2">
                                             <label className="block text-sm font-semibold text-slate-700">
                                                 Mata Uang
                                             </label>
-                                            <button
-                                                type="button"
-                                                onClick={handleCurrencyToggle}
-                                                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200"
-                                            >
+                                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
                                                 <Globe className="h-4 w-4" />
-                                                {currency === 'IDR' ? 'Rupiah (IDR)' : 'US Dollar (USD)'}
-                                            </button>
-                                        </div>
-                                        <div className="text-sm text-slate-600">
-                                            Kurs: 1 USD = Rp {exchangeRate.toLocaleString('id-ID')}
+                                                Rupiah (IDR)
+                                            </div>
                                         </div>
                                     </div>
 
@@ -259,7 +234,7 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
                                                             : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                                                     }`}
                                                 >
-                                                    {formatCurrency(value, currency)}
+                                                    {formatCurrency(value)}
                                                 </button>
                                             ))}
                                         </div>
@@ -270,21 +245,14 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
                                                 type="number"
                                                 value={amount}
                                                 onChange={(e) => setAmount(e.target.value)}
-                                                placeholder={`Masukkan jumlah dalam ${currency}`}
+                                                placeholder="Masukkan jumlah dalam Rupiah"
                                                 className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 required
-                                                min={currency === 'IDR' ? 10000 : 1}
+                                                min={10000}
                                             />
                                         </div>
                                         <div className="mt-2 text-sm text-slate-600">
-                                            {amount && !isNaN(parseFloat(amount)) && (
-                                                <>
-                                                    {currency === 'IDR' 
-                                                        ? `≈ ${formatCurrency(convertAmount(parseFloat(amount), 'IDR', 'USD'), 'USD')}`
-                                                        : `≈ ${formatCurrency(convertAmount(parseFloat(amount), 'USD', 'IDR'), 'IDR')}`
-                                                    }
-                                                </>
-                                            )}
+                                            Minimum donasi Rp 10.000
                                         </div>
                                     </div>
 
@@ -302,48 +270,51 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
                                         </label>
                                     </div>
 
-                                    {/* Donor Information */}
-                                    <div className="space-y-4">
-                                        <h3 className="text-lg font-semibold text-slate-900">Informasi Donatur</h3>
+                                    {/* Donor Information - Only show if not logged in AND not anonymous */}
+                                    {!authUser && !isAnonymous && (
+                                        <div className="space-y-4">
+                                            <h3 className="text-lg font-semibold text-slate-900">Informasi Donatur</h3>
 
-                                        {/* Name */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-700 mb-2">
-                                                Nama Lengkap *
-                                            </label>
-                                            <div className="relative">
-                                                <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                                                <input
-                                                    type="text"
-                                                    value={name}
-                                                    onChange={(e) => setName(e.target.value)}
-                                                    placeholder="Masukkan nama lengkap"
-                                                    className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                    required
-                                                    disabled={isAnonymous}
-                                                />
+                                            {/* Name */}
+                                            <div>
+                                                <label className="block text-sm font-medium text-slate-700 mb-2">
+                                                    Nama Lengkap *
+                                                </label>
+                                                <div className="relative">
+                                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                                                    <input
+                                                        type="text"
+                                                        value={name}
+                                                        onChange={(e) => setName(e.target.value)}
+                                                        placeholder="Masukkan nama lengkap"
+                                                        className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Email */}
+                                            <div>
+                                                <label className="block text-sm font-medium text-slate-700 mb-2">
+                                                    Email *
+                                                </label>
+                                                <div className="relative">
+                                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                                                    <input
+                                                        type="email"
+                                                        value={email}
+                                                        onChange={(e) => setEmail(e.target.value)}
+                                                        placeholder="email@example.com"
+                                                        className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                        required
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
+                                    )}
 
-                                        {/* Email */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-700 mb-2">
-                                                Email *
-                                            </label>
-                                            <div className="relative">
-                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                                                <input
-                                                    type="email"
-                                                    value={email}
-                                                    onChange={(e) => setEmail(e.target.value)}
-                                                    placeholder="email@example.com"
-                                                    className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-
-                                        {/* Phone */}
+                                    {/* Phone - Only show if not anonymous */}
+                                    {!isAnonymous && (
                                         <div>
                                             <label className="block text-sm font-medium text-slate-700 mb-2">
                                                 No. Telepon (Opsional)
@@ -359,8 +330,10 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
                                                 />
                                             </div>
                                         </div>
+                                    )}
 
-                                        {/* Message */}
+                                    {/* Message - Only show if not anonymous */}
+                                    {!isAnonymous && (
                                         <div>
                                             <label className="block text-sm font-medium text-slate-700 mb-2">
                                                 Pesan Dukungan (Opsional)
@@ -380,7 +353,7 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
                                                 {message.length}/1000 karakter
                                             </div>
                                         </div>
-                                    </div>
+                                    )}
 
                                     {/* Submit Button */}
                                     <div className="pt-6 border-t border-slate-200">
@@ -444,10 +417,10 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
                                 <div className="mb-4">
                                     <div className="flex items-center justify-between text-sm mb-2">
                                         <span className="font-semibold text-slate-900">
-                                            {formatCurrency(campaign.raised, 'IDR')}
+                                            {formatCurrency(campaign.raised)}
                                         </span>
                                         <span className="text-slate-600">
-                                            dari {formatCurrency(campaign.target, 'IDR')}
+                                            dari {formatCurrency(campaign.target)}
                                         </span>
                                     </div>
                                     <div className="w-full bg-slate-100 rounded-full h-2">

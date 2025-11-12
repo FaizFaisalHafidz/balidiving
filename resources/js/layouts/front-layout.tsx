@@ -12,7 +12,7 @@ interface FrontLayoutProps {
 
 export default function FrontLayout({ 
   children, 
-  title = 'Bali Diving', 
+  title = 'Adopt the Blue', 
   description = 'Marine Conservation Crowdfunding Platform' 
 }: FrontLayoutProps) {
   return (

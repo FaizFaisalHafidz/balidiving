@@ -244,7 +244,7 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
                                     <Waves className="h-7 w-7 text-white" />
                                 </div>
                                 <div>
-                                    <div className="font-semibold text-white">Bali Diving</div>
+                                    <div className="font-semibold text-white">Adopt the Blue</div>
                                     <div className="text-sm text-slate-400">Ocean Conservation Platform</div>
                                 </div>
                             </div>

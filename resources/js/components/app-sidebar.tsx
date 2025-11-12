@@ -13,14 +13,11 @@ import {
 import { PageProps, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import {
-    BookOpen,
     FileText,
     FolderHeart,
     HandHeart,
     Heart,
     LayoutDashboard,
-    MessageSquare,
-    Settings,
     TrendingUp,
     Users
 } from 'lucide-react';
@@ -71,19 +68,9 @@ export function AppSidebar() {
             icon: HandHeart,
         },
         {
-            title: 'Moderasi Komentar',
-            href: '/admin/comments',
-            icon: MessageSquare,
-        },
-        {
             title: 'Laporan & Statistik',
             href: '/admin/reports',
             icon: TrendingUp,
-        },
-        {
-            title: 'Pengaturan Sistem',
-            href: '/admin/settings',
-            icon: Settings,
         },
     ];
 
@@ -103,11 +90,6 @@ export function AppSidebar() {
             title: 'Semua Donasi',
             href: '/admin/donations',
             icon: HandHeart,
-        },
-        {
-            title: 'Moderasi Komentar',
-            href: '/admin/comments',
-            icon: MessageSquare,
         },
         {
             title: 'Laporan & Statistik',
@@ -158,16 +140,16 @@ export function AppSidebar() {
 
     // Menu footer untuk semua user
     const footerNavItems: NavItem[] = [
-        {
-            title: 'Tentang Born to Give',
-            href: '/about',
-            icon: BookOpen,
-        },
-        {
-            title: 'Panduan Pengguna',
-            href: '/help',
-            icon: FileText,
-        },
+        // {
+        //     title: 'Tentang Adopt the Blue',
+        //     href: '/about',
+        //     icon: BookOpen,
+        // },
+        // {
+        //     title: 'Panduan Pengguna',
+        //     href: '/help',
+        //     icon: FileText,
+        // },
     ];
 
     return (

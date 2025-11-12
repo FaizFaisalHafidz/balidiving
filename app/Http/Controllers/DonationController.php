@@ -70,8 +70,8 @@ class DonationController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:10000', // Minimum Rp 10.000
             'currency' => 'required|in:IDR,USD',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email',
             'phone' => 'nullable|string|max:20',
             'message' => 'nullable|string|max:1000',
             'is_anonymous' => 'boolean',
@@ -89,14 +89,25 @@ class DonationController extends Controller
             ? $request->amount * $this->getExchangeRate()
             : $request->amount;
 
+        // Get auth user data
+        $user = Auth::user();
+        
+        // Determine name and email
+        // Priority: Anonymous > Request input > Auth user
+        $donorName = $request->is_anonymous 
+            ? 'Anonymous' 
+            : ($request->name ?? $user->name);
+            
+        $donorEmail = $request->email ?? $user->email;
+
         // Create donation record
         $donasi = Donasi::create([
             'kampanye_id' => $kampanye->id,
             'user_id' => Auth::id(),
             'order_id' => 'DONATE-' . strtoupper(Str::random(10)),
             'jumlah' => $amountIDR,
-            'nama_donatur' => $request->is_anonymous ? 'Anonymous' : $request->name,
-            'email_donatur' => $request->email,
+            'nama_donatur' => $donorName,
+            'email_donatur' => $donorEmail,
             'no_telepon_donatur' => $request->phone,
             'pesan' => $request->message,
             'metode_pembayaran' => 'midtrans',

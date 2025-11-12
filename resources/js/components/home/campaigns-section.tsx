@@ -8,7 +8,9 @@ interface Campaign {
   description: string;
   image: string;
   raised: number;
+  raisedFormatted: string;
   target: number;
+  targetFormatted: string;
   progress: number;
   daysLeft: number;
   href: string;
@@ -140,12 +142,12 @@ export default function CampaignsSection({ campaigns }: CampaignsSectionProps) {
                   <div className="flex justify-between items-baseline mb-6 text-sm">
                     <div>
                       <span className="text-slate-900 font-bold text-xl">
-                        ${campaign.raised.toLocaleString()}
+                        {campaign.raisedFormatted}
                       </span>
                       <span className="text-slate-500 text-xs ml-1">raised</span>
                     </div>
                     <span className="text-slate-500">
-                      {t('campaigns.of')} ${campaign.target.toLocaleString()}
+                      {t('campaigns.of')} {campaign.targetFormatted}
                     </span>
                   </div>
 

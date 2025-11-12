@@ -3,76 +3,45 @@
 namespace App\Exports;
 
 use App\Models\Donasi;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class DonationsExport implements FromQuery, WithHeadings, WithMapping, WithStyles
+class DonationsExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithTitle
 {
-    use Exportable;
+    protected $startDate;
+    protected $endDate;
 
-    protected $filters;
-
-    public function __construct($filters = [])
+    public function __construct($startDate, $endDate)
     {
-        $this->filters = $filters;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
     }
 
-    public function query()
+    public function collection()
     {
-        $query = Donasi::with(['user', 'kampanye'])
-            ->orderBy('created_at', 'desc');
-
-        // Apply filters
-        if (!empty($this->filters['search'])) {
-            $search = $this->filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->whereHas('user', function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%");
-                })
-                ->orWhereHas('kampanye', function ($query) use ($search) {
-                    $query->where('judul', 'like', "%{$search}%");
-                })
-                ->orWhere('order_id', 'like', "%{$search}%")
-                ->orWhere('id_transaksi', 'like', "%{$search}%");
-            });
-        }
-
-        if (!empty($this->filters['status']) && $this->filters['status'] !== 'all') {
-            $query->where('status', $this->filters['status']);
-        }
-
-        if (!empty($this->filters['campaign_id']) && $this->filters['campaign_id'] !== 'all') {
-            $query->where('kampanye_id', $this->filters['campaign_id']);
-        }
-
-        if (!empty($this->filters['date_from'])) {
-            $query->whereDate('created_at', '>=', $this->filters['date_from']);
-        }
-
-        if (!empty($this->filters['date_to'])) {
-            $query->whereDate('created_at', '<=', $this->filters['date_to']);
-        }
-
-        return $query;
+        return Donasi::with(['user', 'kampanye'])
+            ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     public function headings(): array
     {
         return [
+            'ID',
             'Order ID',
-            'ID Transaksi',
-            'Donatur',
+            'Nama Donatur',
             'Email',
             'Kampanye',
-            'Jumlah Donasi',
+            'Jumlah (IDR)',
             'Status',
+            'Anonymous',
             'Metode Pembayaran',
             'Pesan',
-            'Anonim',
             'Tanggal Donasi',
         ];
     }
@@ -80,16 +49,16 @@ class DonationsExport implements FromQuery, WithHeadings, WithMapping, WithStyle
     public function map($donation): array
     {
         return [
+            $donation->id,
             $donation->order_id ?? '-',
-            $donation->id_transaksi ?? '-',
-            $donation->is_anonim ? 'Anonim' : ($donation->nama_donatur ?? $donation->user?->name ?? 'Guest'),
-            $donation->email_donatur ?? $donation->user?->email ?? '-',
-            $donation->kampanye?->judul ?? '-',
-            'Rp ' . number_format($donation->jumlah, 0, ',', '.'),
-            $this->getStatusLabel($donation->status),
-            $donation->metode_pembayaran ?? '-',
-            $donation->pesan ?? $donation->pesan_dukungan ?? '-',
+            $donation->is_anonim ? 'Anonymous' : ($donation->nama_donatur ?? $donation->user->name ?? 'N/A'),
+            $donation->is_anonim ? 'Anonymous' : ($donation->email_donatur ?? $donation->user->email ?? 'N/A'),
+            $donation->kampanye->judul ?? 'N/A',
+            number_format($donation->jumlah, 0, ',', '.'),
+            ucfirst($donation->status),
             $donation->is_anonim ? 'Ya' : 'Tidak',
+            $donation->metode_pembayaran ?? 'N/A',
+            $donation->pesan ?? $donation->pesan_dukungan ?? '-',
             $donation->created_at->format('d/m/Y H:i'),
         ];
     }
@@ -101,13 +70,8 @@ class DonationsExport implements FromQuery, WithHeadings, WithMapping, WithStyle
         ];
     }
 
-    private function getStatusLabel($status)
+    public function title(): string
     {
-        return match($status) {
-            'pending' => 'Pending',
-            'berhasil' => 'Berhasil',
-            'gagal' => 'Gagal',
-            default => ucfirst($status),
-        };
+        return 'Laporan Donasi';
     }
 }

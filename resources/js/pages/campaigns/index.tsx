@@ -11,7 +11,9 @@ interface Campaign {
     description: string;
     image: string;
     raised: number;
+    raisedFormatted: string;
     target: number;
+    targetFormatted: string;
     progress: number;
     daysLeft: number;
     category: string;
@@ -62,7 +64,7 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
 
     return (
         <FrontLayout
-            title="All Campaigns - Born to Give"
+            title="All Campaigns - Adopt the Blue"
             description="Browse all active ocean conservation campaigns and support marine life protection"
         >
             <Head title="All Campaigns" />
@@ -231,10 +233,10 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
                                                     {/* Funding Info */}
                                                     <div className="flex justify-between items-center text-sm">
                                                         <span className="text-slate-900 font-bold">
-                                                            ${campaign.raised.toLocaleString()}
+                                                            {campaign.raisedFormatted}
                                                         </span>
                                                         <span className="text-slate-500">
-                                                            of ${campaign.target.toLocaleString()}
+                                                            of {campaign.targetFormatted}
                                                         </span>
                                                     </div>
                                                 </div>

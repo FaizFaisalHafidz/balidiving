@@ -12,44 +12,51 @@ class AboutController extends Controller
 {
     public function index()
     {
+        // Check if fundraiser role exists
+        $fundraiserRoleExists = \Spatie\Permission\Models\Role::where('name', 'fundraiser')->exists();
+        $donorRoleExists = \Spatie\Permission\Models\Role::where('name', 'donor')->exists();
+        
         // Statistics
         $stats = [
             'total_campaigns' => Kampanye::count(),
             'active_campaigns' => Kampanye::where('status', 'aktif')
                 ->where('tanggal_berakhir', '>=', now()->toDateString())
                 ->count(),
-            'total_fundraisers' => User::role('fundraiser')->count(),
-            'total_donors' => User::role('donor')->count(),
+            'total_fundraisers' => $fundraiserRoleExists ? User::role('fundraiser')->count() : 0,
+            'total_donors' => $donorRoleExists ? User::role('donor')->count() : 0,
             'total_raised' => Donasi::where('status', 'berhasil')->sum('jumlah'),
             'total_donations' => Donasi::where('status', 'berhasil')->count(),
         ];
 
         // Team members (fundraisers with most successful campaigns)
-        $teamMembers = User::role('fundraiser')
-            ->with(['profilFundraiser', 'kampanye'])
-            ->withCount([
-                'kampanye as successful_campaigns_count' => function ($query) {
-                    $query->where('status', 'selesai');
-                }
-            ])
-            ->having('successful_campaigns_count', '>', 0)
-            ->orderByDesc('successful_campaigns_count')
-            ->limit(6)
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'avatar' => $user->avatar ?? null,
-                    'role' => 'Fundraiser',
-                    'bio' => $user->profilFundraiser->bio ?? 'Passionate about ocean conservation',
-                    'successful_campaigns' => $user->successful_campaigns_count,
-                    'total_raised' => $user->kampanye()
-                        ->where('status', 'selesai')
-                        ->sum('dana_terkumpul'),
-                ];
-            });
+        $teamMembers = collect([]);
+        if ($fundraiserRoleExists) {
+            $teamMembers = User::role('fundraiser')
+                ->with(['profilFundraiser', 'kampanye'])
+                ->withCount([
+                    'kampanye as successful_campaigns_count' => function ($query) {
+                        $query->where('status', 'selesai');
+                    }
+                ])
+                ->having('successful_campaigns_count', '>', 0)
+                ->orderByDesc('successful_campaigns_count')
+                ->limit(6)
+                ->get()
+                ->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'avatar' => $user->avatar ?? null,
+                        'role' => 'Fundraiser',
+                        'bio' => $user->profilFundraiser->bio ?? 'Passionate about ocean conservation',
+                        'successful_campaigns' => $user->successful_campaigns_count,
+                        'total_raised' => $user->kampanye()
+                            ->where('status', 'selesai')
+                            ->sum('dana_terkumpul'),
+                    ];
+                });
+        }
 
         // Mission & Vision
         $mission = [
@@ -107,7 +114,7 @@ class AboutController extends Controller
             [
                 'year' => '2024',
                 'title' => 'Peluncuran Platform',
-                'description' => 'Born to Give diluncurkan sebagai platform crowdfunding pertama yang fokus pada konservasi laut di Indonesia.'
+                'description' => 'Adopt the Blue diluncurkan sebagai platform crowdfunding pertama yang fokus pada konservasi laut di Indonesia.'
             ],
             [
                 'year' => '2024',

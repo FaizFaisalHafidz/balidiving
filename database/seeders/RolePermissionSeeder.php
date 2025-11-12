@@ -77,6 +77,16 @@ class RolePermissionSeeder extends Seeder
             'report.export',
         ]);
 
+        // Fundraiser - Can create and manage campaigns
+        $fundraiser = Role::create(['name' => 'fundraiser']);
+        $fundraiser->givePermissionTo([
+            'campaign.create',
+            'campaign.read',
+            'campaign.update',
+            'donation.read',
+            'report.read',
+        ]);
+
         // Donor - Basic read permissions and donation
         $donor = Role::create(['name' => 'donor']);
         $donor->givePermissionTo([
