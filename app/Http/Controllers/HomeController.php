@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kampanye;
 use App\Models\Donasi;
 use App\Models\User;
+use App\Models\Event;
 use App\Helpers\CurrencyHelper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -66,9 +67,37 @@ class HomeController extends Controller
             })->count(),
         ];
 
+        // Get upcoming events (limit to 3 for homepage)
+        $events = Event::where('start_date', '>=', now())
+            ->where('status', 'upcoming')
+            ->orderBy('start_date', 'asc')
+            ->limit(3)
+            ->get()
+            ->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'slug' => $event->slug,
+                    'description' => $event->description,
+                    'image' => $event->image,
+                    'start_date' => $event->start_date->toISOString(),
+                    'start_date_formatted' => $event->start_date->format('d M Y'),
+                    'start_time' => $event->start_date->format('h:i A'),
+                    'location' => $event->location,
+                    'day' => $event->start_date->format('d'),
+                    'month' => $event->start_date->format('M'),
+                    'year' => $event->start_date->format('Y'),
+                    'day_name' => $event->start_date->format('l'),
+                    'max_participants' => $event->max_participants,
+                    'registered_participants' => $event->registered_participants,
+                    'available_slots' => $event->availableSlots(),
+                ];
+            });
+
         return Inertia::render('home', [
             'campaigns' => $campaigns,
             'stats' => $stats,
+            'events' => $events,
         ]);
     }
 }

@@ -18,7 +18,7 @@ export default function FeaturedLinks() {
       iconHover: 'group-hover:bg-blue-600',
     },
     {
-      href: '/volunteer',
+      href: '#',
       icon: HandRaisedIcon,
       subtitle: t('featured.volunteer.subtitle'),
       title: t('featured.volunteer.title'),
@@ -28,7 +28,7 @@ export default function FeaturedLinks() {
       iconHover: 'group-hover:bg-teal-600',
     },
     {
-      href: '/events',
+      href: '#',
       icon: CalendarDaysIcon,
       subtitle: t('featured.events.subtitle'),
       title: t('featured.events.title'),

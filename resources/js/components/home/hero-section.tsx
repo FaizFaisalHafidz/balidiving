@@ -1,15 +1,58 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from '@inertiajs/react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function HeroSection() {
   const { t } = useLanguage();
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  
+  const videos = [
+    '/images/vid-1.mov',
+    '/images/vid-2.mov',
+    '/images/vid-3.mov',
+    '/images/vid-4.mov',
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentVideoIndex((prev) => (prev + 1) % videos.length);
+    }, 10000); // Ganti video setiap 10 detik
+
+    return () => clearInterval(interval);
+  }, []);
   
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Modern Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-700 to-teal-600">
+      {/* Video Background dengan Transisi */}
+      <div className="absolute inset-0 z-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentVideoIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            >
+              <source src={videos[currentVideoIndex]} type="video/mp4" />
+            </video>
+          </motion.div>
+        </AnimatePresence>
+        {/* Dark overlay untuk readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/70 via-blue-800/60 to-teal-700/70" />
+      </div>
+
+      {/* Modern Gradient Background (fallback) - hidden when video loads */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-700 to-teal-600 -z-10">
         {/* Animated gradient overlay */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-tr from-purple-600/20 via-transparent to-cyan-400/30"
@@ -23,21 +66,6 @@ export default function HeroSection() {
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
       </div>
-
-      {/* Background Image Overlay */}
-      <motion.div
-        className="absolute inset-0 z-0 opacity-40"
-        initial={{ scale: 1.1, opacity: 0 }}
-        animate={{ scale: 1, opacity: 0.4 }}
-        transition={{ duration: 2, ease: "easeOut" }}
-      >
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat mix-blend-overlay"
-          style={{
-            backgroundImage: 'url(/images/conservation-hero-main-2.webp)',
-          }}
-        />
-      </motion.div>
 
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

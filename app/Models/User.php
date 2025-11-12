@@ -67,7 +67,7 @@ class User extends Authenticatable
      */
     public function kampanye(): HasMany
     {
-        return $this->hasMany(Kampanye::class, 'created_by');
+        return $this->hasMany(Kampanye::class, 'user_id');
     }
 
     /**

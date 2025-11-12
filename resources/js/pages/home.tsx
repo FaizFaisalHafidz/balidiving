@@ -32,12 +32,27 @@ interface Stats {
   active_volunteers: number;
 }
 
+interface Event {
+  id: number;
+  title: string;
+  description: string;
+  day: string;
+  month: string;
+  year: string;
+  day_name: string;
+  start_time: string;
+  location?: string;
+  slug: string;
+  available_slots: number;
+}
+
 interface HomeProps {
   campaigns: Campaign[];
   stats: Stats;
+  events: Event[];
 }
 
-export default function Home({ campaigns, stats }: HomeProps) {
+export default function Home({ campaigns, stats, events }: HomeProps) {
   return (
     <FrontLayout 
       title="Adopt the Blue - Marine Conservation Crowdfunding"
@@ -47,7 +62,7 @@ export default function Home({ campaigns, stats }: HomeProps) {
       <FeaturedLinks />
       <CampaignsSection campaigns={campaigns} />
       <StatsSection stats={stats} />
-      <UpcomingEvents />
+      <UpcomingEvents events={events} />
       <StoriesSection />
       <PartnersSection />
       <CTASection />
