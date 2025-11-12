@@ -40,9 +40,8 @@ Route::get('/donations/check-status/{orderId}', [DonationController::class, 'che
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard untuk admin, super-admin, dan fundraiser
     Route::middleware(['role:super-admin,admin,fundraiser'])->group(function () {
-        Route::get('dashboard', function () {
-            return Inertia::render('dashboard');
-        })->name('dashboard');
+        Route::get('dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
+            ->name('dashboard');
 
         // User Management (Super Admin & Admin only)
         Route::middleware(['role:super-admin,admin'])->group(function () {
