@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         // Create Super Admin
         $superAdmin = User::create([
             'name' => 'Super Admin',
-            'email' => 'superadmin@borntogive.com',
+            'email' => 'superadmin@atb.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
         ]);
@@ -31,8 +31,8 @@ class UserSeeder extends Seeder
 
         // Create Admin
         $admin = User::create([
-            'name' => 'Admin Bali Diving',
-            'email' => 'admin@borntogive.com',
+            'name' => 'Admin Adopt the Blue',
+            'email' => 'admin@atb.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
         ]);
@@ -47,7 +47,7 @@ class UserSeeder extends Seeder
         // Create Sample Donors
         $donor1 = User::create([
             'name' => 'John Donor',
-            'email' => 'donor@borntogive.com',
+            'email' => 'donor@atb.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
         ]);
@@ -61,7 +61,7 @@ class UserSeeder extends Seeder
 
         $donor2 = User::create([
             'name' => 'Jane Smith',
-            'email' => 'jane@example.com',
+            'email' => 'jane@atb.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
         ]);
