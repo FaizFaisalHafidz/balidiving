@@ -76,7 +76,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
     Zap,
 };
 
-export default function About({ stats, teamMembers, mission, vision, values, timeline }: AboutProps) {
+function AboutContent({ stats, teamMembers, mission, vision, values, timeline }: AboutProps) {
     const { t } = useLanguage();
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('id-ID', {
@@ -87,7 +87,7 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
     };
 
     return (
-        <FrontLayout>
+        <>
             {/* Hero Section - More modern and clean */}
             <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-32 overflow-hidden">
                 {/* Subtle grid pattern */}
@@ -457,6 +457,14 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
                     </motion.div>
                 </div>
             </section>
+        </>
+    );
+}
+
+export default function About(props: AboutProps) {
+    return (
+        <FrontLayout>
+            <AboutContent {...props} />
         </FrontLayout>
     );
 }

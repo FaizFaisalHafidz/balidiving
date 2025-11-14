@@ -43,7 +43,7 @@ interface CampaignsIndexProps {
     };
 }
 
-export default function CampaignsIndex({ campaigns, categories, filters }: CampaignsIndexProps) {
+function CampaignsContent({ campaigns, categories, filters }: CampaignsIndexProps) {
     const { t } = useLanguage();
     const [search, setSearch] = useState(filters.search);
     const [selectedCategory, setSelectedCategory] = useState(filters.category);
@@ -65,10 +65,7 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
     };
 
     return (
-        <FrontLayout
-            title={`${t('campaigns.page.title')} - Adopt the Blue`}
-            description={t('campaigns.page.description')}
-        >
+        <>
             <Head title={t('campaigns.page.title')} />
 
             {/* Hero Section - Modern dark design */}
@@ -270,6 +267,17 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
                     )}
                 </div>
             </section>
+        </>
+    );
+}
+
+export default function CampaignsIndex(props: CampaignsIndexProps) {
+    return (
+        <FrontLayout
+            title={`Jelajahi Kampanye - Adopt the Blue`}
+            description="Dukung proyek konservasi laut yang bermakna dan buat perbedaan nyata"
+        >
+            <CampaignsContent {...props} />
         </FrontLayout>
     );
 }
