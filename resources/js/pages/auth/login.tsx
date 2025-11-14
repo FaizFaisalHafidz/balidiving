@@ -18,7 +18,7 @@ interface LoginProps {
     canRegister: boolean;
 }
 
-export default function Login({
+function LoginContent({
     status,
     canResetPassword,
     canRegister,
@@ -132,4 +132,8 @@ export default function Login({
             )}
         </AuthLayout>
     );
+}
+
+export default function Login(props: LoginProps) {
+    return <LoginContent {...props} />;
 }

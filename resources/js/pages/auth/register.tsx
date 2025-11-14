@@ -11,7 +11,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { useLanguage } from '@/contexts/LanguageContext';
 import AuthLayout from '@/layouts/auth-layout';
 
-export default function Register() {
+function RegisterContent() {
     const { t } = useLanguage();
     return (
         <AuthLayout
@@ -128,4 +128,8 @@ export default function Register() {
             </Form>
         </AuthLayout>
     );
+}
+
+export default function Register() {
+    return <RegisterContent />;
 }
