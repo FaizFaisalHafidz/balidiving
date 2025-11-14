@@ -25,10 +25,7 @@ function LoginContent({
 }: LoginProps) {
     const { t } = useLanguage();
     return (
-        <AuthLayout
-            title={t('auth.login.title')}
-            description={t('auth.login.description')}
-        >
+        <>
             <Head title={t('auth.login.title')} />
 
             <Form
@@ -130,10 +127,17 @@ function LoginContent({
                     {status}
                 </div>
             )}
-        </AuthLayout>
+        </>
     );
 }
 
 export default function Login(props: LoginProps) {
-    return <LoginContent {...props} />;
+    return (
+        <AuthLayout
+            title="Selamat Datang Kembali"
+            description="Masuk untuk melanjutkan berkontribusi menyelamatkan laut kita"
+        >
+            <LoginContent {...props} />
+        </AuthLayout>
+    );
 }

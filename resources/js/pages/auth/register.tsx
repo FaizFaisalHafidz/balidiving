@@ -14,10 +14,7 @@ import AuthLayout from '@/layouts/auth-layout';
 function RegisterContent() {
     const { t } = useLanguage();
     return (
-        <AuthLayout
-            title={t('auth.register.title')}
-            description={t('auth.register.description')}
-        >
+        <>
             <Head title={t('auth.register.title')} />
             <Form
                 {...store.form()}
@@ -126,10 +123,17 @@ function RegisterContent() {
                     </>
                 )}
             </Form>
-        </AuthLayout>
+        </>
     );
 }
 
 export default function Register() {
-    return <RegisterContent />;
+    return (
+        <AuthLayout
+            title="Bergabung Bersama Kami"
+            description="Daftar sekarang dan mulai berkontribusi untuk laut yang lebih baik"
+        >
+            <RegisterContent />
+        </AuthLayout>
+    );
 }
