@@ -1,3 +1,4 @@
+import { useLanguage } from '@/contexts/LanguageContext';
 import FrontLayout from '@/layouts/front-layout';
 import { motion } from 'framer-motion';
 import {
@@ -76,6 +77,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 };
 
 export default function About({ stats, teamMembers, mission, vision, values, timeline }: AboutProps) {
+    const { t } = useLanguage();
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
@@ -108,18 +110,18 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
                     >
                         <div className="inline-flex items-center gap-2 bg-blue-600/20 backdrop-blur-sm px-6 py-2 rounded-full mb-8 border border-blue-500/30">
                             <Waves className="h-5 w-5 text-blue-400" />
-                            <span className="font-medium text-blue-200">Tentang Kami</span>
+                            <span className="font-medium text-blue-200">{t('about.hero.badge')}</span>
                         </div>
                         
                         <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                            Bersama Melindungi
+                            {t('about.hero.title1')}
                             <span className="block text-blue-400">
-                                Lautan Kita
+                                {t('about.hero.title2')}
                             </span>
                         </h1>
                         
                         <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-                            Platform crowdfunding terpercaya untuk kampanye konservasi laut dan lingkungan hidup di Indonesia
+                            {t('about.hero.description')}
                         </p>
                     </motion.div>
                 </div>
@@ -139,7 +141,7 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
                                 <Target className="h-6 w-6 text-blue-600" />
                             </div>
                             <div className="text-3xl font-bold text-slate-900 mb-1">{stats.total_campaigns}</div>
-                            <div className="text-sm text-slate-600">Total Kampanye</div>
+                            <div className="text-sm text-slate-600">{t('about.stats.totalCampaigns')}</div>
                         </motion.div>
 
                         <motion.div
@@ -153,7 +155,7 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
                                 <Activity className="h-6 w-6 text-green-600" />
                             </div>
                             <div className="text-3xl font-bold text-slate-900 mb-1">{stats.active_campaigns}</div>
-                            <div className="text-sm text-slate-600">Kampanye Aktif</div>
+                            <div className="text-sm text-slate-600">{t('about.stats.activeCampaigns')}</div>
                         </motion.div>
 
                         <motion.div
@@ -167,7 +169,7 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
                                 <Users className="h-6 w-6 text-purple-600" />
                             </div>
                             <div className="text-3xl font-bold text-slate-900 mb-1">{stats.total_donors}</div>
-                            <div className="text-sm text-slate-600">Total Donatur</div>
+                            <div className="text-sm text-slate-600">{t('about.stats.totalDonors')}</div>
                         </motion.div>
 
                         <motion.div
@@ -183,7 +185,7 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
                             <div className="text-2xl md:text-3xl font-bold text-slate-900 mb-1">
                                 {formatCurrency(stats.total_raised)}
                             </div>
-                            <div className="text-sm text-slate-600">Dana Terkumpul</div>
+                            <div className="text-sm text-slate-600">{t('about.stats.fundsRaised')}</div>
                         </motion.div>
                     </div>
                 </div>
@@ -427,10 +429,10 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
                         className="max-w-3xl mx-auto text-center"
                     >
                         <h2 className="text-4xl font-bold mb-6">
-                            Bergabunglah dengan Kami
+                            {t('about.cta.title')}
                         </h2>
                         <p className="text-xl text-slate-300 mb-8 leading-relaxed">
-                            Mulai membuat perbedaan hari ini. Baik sebagai donatur atau fundraiser, setiap kontribusi Anda berarti.
+                            {t('about.cta.description')}
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <motion.a
@@ -440,7 +442,7 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
                                 className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold transition-colors shadow-lg"
                             >
                                 <Heart className="h-5 w-5" />
-                                Lihat Kampanye
+                                {t('about.cta.viewCampaigns')}
                             </motion.a>
                             <motion.a
                                 href="/register"
@@ -449,7 +451,7 @@ export default function About({ stats, teamMembers, mission, vision, values, tim
                                 className="inline-flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors border border-slate-600"
                             >
                                 <Users className="h-5 w-5" />
-                                Daftar Sekarang
+                                {t('about.cta.registerNow')}
                             </motion.a>
                         </div>
                     </motion.div>

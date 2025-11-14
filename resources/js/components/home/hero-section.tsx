@@ -1,8 +1,8 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from '@inertiajs/react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Search } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function HeroSection() {
   const { t } = useLanguage();

@@ -8,15 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useLanguage } from '@/contexts/LanguageContext';
 import AuthLayout from '@/layouts/auth-layout';
 
 export default function Register() {
+    const { t } = useLanguage();
     return (
         <AuthLayout
-            title="Bergabung Bersama Kami"
-            description="Daftar sekarang dan mulai berkontribusi untuk laut yang lebih baik"
+            title={t('auth.register.title')}
+            description={t('auth.register.description')}
         >
-            <Head title="Daftar" />
+            <Head title={t('auth.register.title')} />
             <Form
                 {...store.form()}
                 resetOnSuccess={['password', 'password_confirmation']}
@@ -28,7 +30,7 @@ export default function Register() {
                         <div className="grid gap-6">
                             <div className="grid gap-2">
                                 <Label htmlFor="name" className="text-blue-900 dark:text-blue-100">
-                                    Nama Lengkap
+                                    {t('auth.register.name')}
                                 </Label>
                                 <Input
                                     id="name"
@@ -38,7 +40,7 @@ export default function Register() {
                                     tabIndex={1}
                                     autoComplete="name"
                                     name="name"
-                                    placeholder="Nama lengkap Anda"
+                                    placeholder={t('auth.register.name.placeholder')}
                                     className="border-blue-200 focus:border-blue-500 focus:ring-blue-500 dark:border-blue-800"
                                 />
                                 <InputError
@@ -49,7 +51,7 @@ export default function Register() {
 
                             <div className="grid gap-2">
                                 <Label htmlFor="email" className="text-blue-900 dark:text-blue-100">
-                                    Email Address
+                                    {t('auth.register.email')}
                                 </Label>
                                 <Input
                                     id="email"
@@ -58,7 +60,7 @@ export default function Register() {
                                     tabIndex={2}
                                     autoComplete="email"
                                     name="email"
-                                    placeholder="email@example.com"
+                                    placeholder={t('auth.register.email.placeholder')}
                                     className="border-blue-200 focus:border-blue-500 focus:ring-blue-500 dark:border-blue-800"
                                 />
                                 <InputError message={errors.email} />
@@ -66,7 +68,7 @@ export default function Register() {
 
                             <div className="grid gap-2">
                                 <Label htmlFor="password" className="text-blue-900 dark:text-blue-100">
-                                    Password
+                                    {t('auth.register.password')}
                                 </Label>
                                 <Input
                                     id="password"
@@ -75,7 +77,7 @@ export default function Register() {
                                     tabIndex={3}
                                     autoComplete="new-password"
                                     name="password"
-                                    placeholder="Minimal 8 karakter"
+                                    placeholder={t('auth.register.password.placeholder')}
                                     className="border-blue-200 focus:border-blue-500 focus:ring-blue-500 dark:border-blue-800"
                                 />
                                 <InputError message={errors.password} />
@@ -83,7 +85,7 @@ export default function Register() {
 
                             <div className="grid gap-2">
                                 <Label htmlFor="password_confirmation" className="text-blue-900 dark:text-blue-100">
-                                    Konfirmasi Password
+                                    {t('auth.register.passwordConfirm')}
                                 </Label>
                                 <Input
                                     id="password_confirmation"
@@ -92,7 +94,7 @@ export default function Register() {
                                     tabIndex={4}
                                     autoComplete="new-password"
                                     name="password_confirmation"
-                                    placeholder="Ulangi password"
+                                    placeholder={t('auth.register.passwordConfirm.placeholder')}
                                     className="border-blue-200 focus:border-blue-500 focus:ring-blue-500 dark:border-blue-800"
                                 />
                                 <InputError
@@ -107,18 +109,18 @@ export default function Register() {
                                 data-test="register-user-button"
                             >
                                 {processing && <Spinner />}
-                                Buat Akun
+                                {t('auth.register.button')}
                             </Button>
                         </div>
 
                         <div className="text-center text-sm text-blue-600 dark:text-blue-400">
-                            Sudah punya akun?{' '}
+                            {t('auth.register.hasAccount')}{' '}
                             <TextLink 
                                 href={login()} 
                                 tabIndex={6}
                                 className="font-semibold text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
                             >
-                                Masuk di sini
+                                {t('auth.register.loginHere')}
                             </TextLink>
                         </div>
                     </>

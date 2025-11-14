@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useLanguage } from '@/contexts/LanguageContext';
 import AuthLayout from '@/layouts/auth-layout';
 import { register } from '@/routes';
 import { store } from '@/routes/login';
@@ -22,12 +23,13 @@ export default function Login({
     canResetPassword,
     canRegister,
 }: LoginProps) {
+    const { t } = useLanguage();
     return (
         <AuthLayout
-            title="Selamat Datang Kembali"
-            description="Masuk untuk melanjutkan berkontribusi menyelamatkan laut kita"
+            title={t('auth.login.title')}
+            description={t('auth.login.description')}
         >
-            <Head title="Masuk" />
+            <Head title={t('auth.login.title')} />
 
             <Form
                 {...store.form()}
@@ -39,7 +41,7 @@ export default function Login({
                         <div className="grid gap-6">
                             <div className="grid gap-2">
                                 <Label htmlFor="email" className="text-blue-900 dark:text-blue-100">
-                                    Email Address
+                                    {t('auth.login.email')}
                                 </Label>
                                 <Input
                                     id="email"
@@ -58,7 +60,7 @@ export default function Login({
                             <div className="grid gap-2">
                                 <div className="flex items-center">
                                     <Label htmlFor="password" className="text-blue-900 dark:text-blue-100">
-                                        Password
+                                        {t('auth.login.password')}
                                     </Label>
                                     {canResetPassword && (
                                         <TextLink
@@ -66,7 +68,7 @@ export default function Login({
                                             className="ml-auto text-sm text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
                                             tabIndex={5}
                                         >
-                                            Lupa password?
+                                            {t('auth.login.forgotPassword')}
                                         </TextLink>
                                     )}
                                 </div>
@@ -77,7 +79,7 @@ export default function Login({
                                     required
                                     tabIndex={2}
                                     autoComplete="current-password"
-                                    placeholder="Password"
+                                    placeholder={t('auth.login.password')}
                                     className="border-blue-200 focus:border-blue-500 focus:ring-blue-500 dark:border-blue-800"
                                 />
                                 <InputError message={errors.password} />
@@ -91,7 +93,7 @@ export default function Login({
                                     className="border-blue-300 data-[state=checked]:bg-blue-600 dark:border-blue-700"
                                 />
                                 <Label htmlFor="remember" className="text-sm text-blue-700 dark:text-blue-300">
-                                    Ingat saya
+                                    {t('auth.login.remember')}
                                 </Label>
                             </div>
 
@@ -103,19 +105,19 @@ export default function Login({
                                 data-test="login-button"
                             >
                                 {processing && <Spinner />}
-                                Masuk
+                                {t('auth.login.button')}
                             </Button>
                         </div>
 
                         {canRegister && (
                             <div className="text-center text-sm text-blue-600 dark:text-blue-400">
-                                Belum punya akun?{' '}
+                                {t('auth.login.noAccount')}{' '}
                                 <TextLink 
                                     href={register()} 
                                     tabIndex={5}
                                     className="font-semibold text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
                                 >
-                                    Daftar sekarang
+                                    {t('auth.login.registerNow')}
                                 </TextLink>
                             </div>
                         )}

@@ -1,3 +1,4 @@
+import { useLanguage } from '@/contexts/LanguageContext';
 import FrontLayout from '@/layouts/front-layout';
 import { Head, Link, router } from '@inertiajs/react';
 import { motion } from 'framer-motion';
@@ -43,6 +44,7 @@ interface CampaignsIndexProps {
 }
 
 export default function CampaignsIndex({ campaigns, categories, filters }: CampaignsIndexProps) {
+    const { t } = useLanguage();
     const [search, setSearch] = useState(filters.search);
     const [selectedCategory, setSelectedCategory] = useState(filters.category);
     const [sortBy, setSortBy] = useState(filters.sort);
@@ -64,10 +66,10 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
 
     return (
         <FrontLayout
-            title="All Campaigns - Adopt the Blue"
-            description="Browse all active ocean conservation campaigns and support marine life protection"
+            title={`${t('campaigns.page.title')} - Adopt the Blue`}
+            description={t('campaigns.page.description')}
         >
-            <Head title="All Campaigns" />
+            <Head title={t('campaigns.page.title')} />
 
             {/* Hero Section - Modern dark design */}
             <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-20">
@@ -89,10 +91,10 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
                         className="text-center text-white"
                     >
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                            Explore Campaigns
+                            {t('campaigns.page.title')}
                         </h1>
                         <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto">
-                            Support meaningful ocean conservation projects and make a real difference
+                            {t('campaigns.page.description')}
                         </p>
                     </motion.div>
                 </div>
@@ -110,7 +112,7 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
                                     type="text"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Search campaigns..."
+                                    placeholder={t('campaigns.search.placeholder')}
                                     className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                             </form>
@@ -125,7 +127,7 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
                                     onChange={(e) => handleCategoryChange(e.target.value)}
                                     className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
                                 >
-                                    <option value="all">All Categories</option>
+                                    <option value="all">{t('campaigns.filter.allCategories')}</option>
                                     {categories.map((category) => (
                                         <option key={category.id} value={category.nama}>
                                             {category.nama}
@@ -144,10 +146,10 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
                                     onChange={(e) => handleSortChange(e.target.value)}
                                     className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
                                 >
-                                    <option value="recent">Most Recent</option>
-                                    <option value="popular">Most Popular</option>
-                                    <option value="ending">Ending Soon</option>
-                                    <option value="goal">Highest Goal</option>
+                                    <option value="recent">{t('campaigns.sort.recent')}</option>
+                                    <option value="popular">{t('campaigns.sort.popular')}</option>
+                                    <option value="ending">{t('campaigns.sort.ending')}</option>
+                                    <option value="goal">{t('campaigns.sort.goal')}</option>
                                 </select>
                             </div>
                         </div>
@@ -161,8 +163,8 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
                     {campaigns.data.length === 0 ? (
                         <div className="text-center py-20">
                             <div className="text-slate-300 text-6xl mb-4">🔍</div>
-                            <h3 className="text-2xl font-bold text-slate-700 mb-2">No campaigns found</h3>
-                            <p className="text-slate-600">Try adjusting your search or filters</p>
+                            <h3 className="text-2xl font-bold text-slate-700 mb-2">{t('campaigns.noResults')}</h3>
+                            <p className="text-slate-600">{t('campaigns.noResults.desc')}</p>
                         </div>
                     ) : (
                         <>
@@ -202,7 +204,7 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
 
                                                     {/* Days Left Badge */}
                                                     <div className="absolute bottom-4 left-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-lg text-sm font-medium shadow-md">
-                                                        {campaign.daysLeft} days left
+                                                        {campaign.daysLeft} {t('campaigns.daysLeft')}
                                                     </div>
                                                 </div>
 
@@ -236,7 +238,7 @@ export default function CampaignsIndex({ campaigns, categories, filters }: Campa
                                                             {campaign.raisedFormatted}
                                                         </span>
                                                         <span className="text-slate-500">
-                                                            of {campaign.targetFormatted}
+                                                            {t('campaigns.of')} {campaign.targetFormatted}
                                                         </span>
                                                     </div>
                                                 </div>
