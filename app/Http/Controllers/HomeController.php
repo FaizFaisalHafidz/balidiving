@@ -38,7 +38,7 @@ class HomeController extends Controller
                     'id' => $kampanye->id,
                     'title' => $kampanye->judul,
                     'description' => substr($kampanye->deskripsi, 0, 100) . '...',
-                    'image' => $kampanye->gambar_utama,
+                    'image' => $kampanye->gambar_utama_url,
                     'raised' => $raised['amount'],
                     'raisedFormatted' => $raised['formatted'],
                     'target' => $target['amount'],

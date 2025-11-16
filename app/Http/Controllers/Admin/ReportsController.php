@@ -177,7 +177,13 @@ class ReportsController extends Controller
 
         $fileName = 'donations_report_' . $startDate . '_to_' . $endDate . '.xlsx';
 
-        return Excel::download(new DonationsExport($startDate, $endDate), $fileName);
+        // Build filters array
+        $filters = [
+            'date_from' => $startDate,
+            'date_to' => $endDate,
+        ];
+
+        return Excel::download(new DonationsExport($filters), $fileName);
     }
 
     public function exportCampaigns(Request $request)

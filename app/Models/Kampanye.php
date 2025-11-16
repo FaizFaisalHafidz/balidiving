@@ -35,6 +35,29 @@ class Kampanye extends Model
     ];
 
     /**
+     * Get the campaign image URL
+     */
+    public function getGambarUtamaUrlAttribute(): string
+    {
+        if (!$this->gambar_utama) {
+            return asset('images/default-campaign.jpg');
+        }
+
+        // Jika sudah berupa URL lengkap, return as is
+        if (filter_var($this->gambar_utama, FILTER_VALIDATE_URL)) {
+            return $this->gambar_utama;
+        }
+
+        // Jika path dimulai dengan 'campaigns/', gunakan storage
+        if (str_starts_with($this->gambar_utama, 'campaigns/')) {
+            return asset('storage/' . $this->gambar_utama);
+        }
+
+        // Fallback: tambahkan storage/campaigns/
+        return asset('storage/campaigns/' . $this->gambar_utama);
+    }
+
+    /**
      * Return the sluggable configuration array for this model.
      */
     public function sluggable(): array

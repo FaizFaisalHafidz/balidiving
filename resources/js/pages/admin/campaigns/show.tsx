@@ -143,10 +143,10 @@ export default function Show({ auth, campaign, stats }: ShowCampaignPageProps) {
                                     Progress Dana
                                 </p>
                                 <div className="space-y-2">
-                                    <Progress value={campaign.percentage} className="h-3" />
+                                    <Progress value={campaign.percentage || 0} className="h-3" />
                                     <div className="flex justify-between text-sm">
                                         <span className="text-slate-600">
-                                            {campaign.percentage.toFixed(1)}%
+                                            {(campaign.percentage || 0).toFixed(1)}%
                                         </span>
                                         <span className="font-medium text-slate-900">
                                             ${campaign.target_dana.toLocaleString()}
@@ -205,7 +205,7 @@ export default function Show({ auth, campaign, stats }: ShowCampaignPageProps) {
                                     </p>
                                 </div>
                                 <p className="text-2xl font-bold text-slate-900">
-                                    ${stats.average_donation.toFixed(0)}
+                                    ${(stats.average_donation || 0).toFixed(0)}
                                 </p>
                             </div>
 
@@ -260,7 +260,7 @@ export default function Show({ auth, campaign, stats }: ShowCampaignPageProps) {
                 {/* Recent Donations */}
                 <div className="bg-white rounded-lg border border-slate-200 p-6">
                     <h3 className="text-xl font-bold text-slate-900 mb-4">Donasi Terbaru</h3>
-                    {stats.recent_donations.length > 0 ? (
+                    {stats.recent_donations && stats.recent_donations.length > 0 ? (
                         <div className="space-y-4">
                             {stats.recent_donations.map((donation) => (
                                 <div

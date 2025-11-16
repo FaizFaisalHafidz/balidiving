@@ -149,7 +149,7 @@ class CampaignController extends Controller
         $stats = [
             'total_donations' => $campaign->donasi()->where('status', 'berhasil')->count(),
             'total_donors' => $campaign->donasi()->where('status', 'berhasil')->distinct('user_id')->count(),
-            'average_donation' => $campaign->donasi()->where('status', 'berhasil')->avg('amount') ?? 0,
+            'average_donation' => $campaign->donasi()->where('status', 'berhasil')->avg('jumlah') ?? 0,
             'percentage' => $campaign->percentage,
         ];
 
@@ -188,7 +188,7 @@ class CampaignController extends Controller
             'status' => 'required|in:draft,aktif,selesai',
         ]);
 
-        // Handle image upload
+        // Handle image upload only if new file is uploaded
         if ($request->hasFile('gambar_utama')) {
             // Delete old image
             if ($campaign->gambar_utama && Storage::disk('public')->exists($campaign->gambar_utama)) {
@@ -199,6 +199,9 @@ class CampaignController extends Controller
             $imageName = time() . '_' . $image->getClientOriginalName();
             $imagePath = $image->storeAs('campaigns', $imageName, 'public');
             $validated['gambar_utama'] = $imagePath;
+        } else {
+            // Remove gambar_utama from validated data to keep existing image
+            unset($validated['gambar_utama']);
         }
 
         $campaign->update($validated);

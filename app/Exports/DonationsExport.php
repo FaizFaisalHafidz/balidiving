@@ -12,21 +12,43 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class DonationsExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithTitle
 {
-    protected $startDate;
-    protected $endDate;
+    protected $filters;
 
-    public function __construct($startDate, $endDate)
+    public function __construct($filters)
     {
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
+        $this->filters = $filters;
     }
 
     public function collection()
     {
-        return Donasi::with(['user', 'kampanye'])
-            ->whereBetween('created_at', [$this->startDate, $this->endDate])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Donasi::with(['user', 'kampanye']);
+
+        // Apply filters
+        if (!empty($this->filters['date_from'])) {
+            $query->whereDate('created_at', '>=', $this->filters['date_from']);
+        }
+
+        if (!empty($this->filters['date_to'])) {
+            $query->whereDate('created_at', '<=', $this->filters['date_to']);
+        }
+
+        if (!empty($this->filters['status']) && $this->filters['status'] !== 'all') {
+            $query->where('status', $this->filters['status']);
+        }
+
+        if (!empty($this->filters['campaign_id'])) {
+            $query->where('kampanye_id', $this->filters['campaign_id']);
+        }
+
+        if (!empty($this->filters['search'])) {
+            $query->where(function ($q) {
+                $q->where('nama_donatur', 'like', '%' . $this->filters['search'] . '%')
+                  ->orWhere('email_donatur', 'like', '%' . $this->filters['search'] . '%')
+                  ->orWhere('order_id', 'like', '%' . $this->filters['search'] . '%');
+            });
+        }
+
+        return $query->orderBy('created_at', 'desc')->get();
     }
 
     public function headings(): array
