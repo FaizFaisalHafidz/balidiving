@@ -165,6 +165,11 @@ class DonationController extends Controller
 
             $snapToken = Snap::getSnapToken($transaction);
             
+            Log::info('Midtrans Snap Token Generated', [
+                'order_id' => $donasi->order_id,
+                'snap_token' => $snapToken,
+            ]);
+            
             // Update donation with snap token
             $donasi->update(['snap_token' => $snapToken]);
 
