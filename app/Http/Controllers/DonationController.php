@@ -6,6 +6,7 @@ use App\Models\Kampanye;
 use App\Models\Donasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Midtrans\Config;
@@ -92,13 +93,13 @@ class DonationController extends Controller
         // Get auth user data
         $user = Auth::user();
         
-        // Determine name and email
-        // Priority: Anonymous > Request input > Auth user
-        $donorName = $request->is_anonymous 
-            ? 'Anonymous' 
-            : ($request->name ?? $user->name);
-            
-        $donorEmail = $request->email ?? $user->email;
+        // Determine name and email with fallback to user data
+        // For Midtrans, we need actual name and email (not "Anonymous")
+        $actualName = $request->name ?? $user->name;
+        $actualEmail = $request->email ?? $user->email;
+        
+        // Display name (can be Anonymous)
+        $displayName = $request->is_anonymous ? 'Anonymous' : $actualName;
 
         // Create donation record
         $donasi = Donasi::create([
@@ -106,8 +107,8 @@ class DonationController extends Controller
             'user_id' => Auth::id(),
             'order_id' => 'DONATE-' . strtoupper(Str::random(10)),
             'jumlah' => $amountIDR,
-            'nama_donatur' => $donorName,
-            'email_donatur' => $donorEmail,
+            'nama_donatur' => $displayName,
+            'email_donatur' => $actualEmail,
             'no_telepon_donatur' => $request->phone,
             'pesan' => $request->message,
             'metode_pembayaran' => 'midtrans',
@@ -130,10 +131,11 @@ class DonationController extends Controller
             ]
         ];
 
+        // Use actual name and email for Midtrans (required fields)
         $customerDetails = [
-            'first_name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone ?? '',
+            'first_name' => $actualName,
+            'email' => $actualEmail,
+            'phone' => $request->phone ?? $user->phone ?? '',
         ];
 
         $transaction = [
@@ -154,6 +156,13 @@ class DonationController extends Controller
         ];
 
         try {
+            // Log transaction data for debugging
+            Log::info('Midtrans Transaction Request', [
+                'transaction_details' => $transactionDetails,
+                'customer_details' => $customerDetails,
+                'item_details' => $itemDetails,
+            ]);
+
             $snapToken = Snap::getSnapToken($transaction);
             
             // Update donation with snap token
@@ -184,6 +193,13 @@ class DonationController extends Controller
         } catch (\Exception $e) {
             // Delete failed donation
             $donasi->delete();
+            
+            // Log error details
+            Log::error('Midtrans Snap Token Error', [
+                'message' => $e->getMessage(),
+                'order_id' => $donasi->order_id,
+                'amount' => $amountIDR,
+            ]);
             
             return back()->withErrors(['message' => 'Gagal membuat pembayaran: ' . $e->getMessage()]);
         }
