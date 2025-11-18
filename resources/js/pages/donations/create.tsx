@@ -74,28 +74,35 @@ export default function DonationCreate({ campaign, midtransClientKey, exchangeRa
                     
                     if (window.snap) {
                         clearInterval(checkSnap);
-                        console.log('Snap found! Opening payment...');
+                        console.log('Snap found! Opening payment with token:', data.snap_token);
                         
-                        // Open Midtrans Snap
-                        window.snap.pay(data.snap_token, {
-                            onSuccess: function(result: any) {
-                                console.log('Payment success:', result);
-                                router.visit(`/donations/success?order_id=${data.order_id}`);
-                            },
-                            onPending: function(result: any) {
-                                console.log('Payment pending:', result);
-                                router.visit(`/donations/success?order_id=${data.order_id}`);
-                            },
-                            onError: function(result: any) {
-                                console.error('Payment error:', result);
-                                setError('Pembayaran gagal. Silakan coba lagi.');
-                                setIsProcessing(false);
-                            },
-                            onClose: function() {
-                                console.log('Payment popup closed');
-                                setIsProcessing(false);
-                            }
-                        });
+                        try {
+                            // Open Midtrans Snap
+                            window.snap.pay(data.snap_token, {
+                                onSuccess: function(result: any) {
+                                    console.log('Payment success:', result);
+                                    router.visit(`/donations/success?order_id=${data.order_id}`);
+                                },
+                                onPending: function(result: any) {
+                                    console.log('Payment pending:', result);
+                                    router.visit(`/donations/success?order_id=${data.order_id}`);
+                                },
+                                onError: function(result: any) {
+                                    console.error('Payment error:', result);
+                                    console.error('Error details:', JSON.stringify(result));
+                                    setError('Pembayaran gagal: ' + (result.status_message || 'Silakan coba lagi.'));
+                                    setIsProcessing(false);
+                                },
+                                onClose: function() {
+                                    console.log('Payment popup closed');
+                                    setIsProcessing(false);
+                                }
+                            });
+                        } catch (error) {
+                            console.error('Error calling snap.pay:', error);
+                            setError('Gagal membuka payment gateway: ' + error);
+                            setIsProcessing(false);
+                        }
                     } else if (attempts >= maxAttempts) {
                         clearInterval(checkSnap);
                         console.error('Snap not loaded after 10 seconds');
